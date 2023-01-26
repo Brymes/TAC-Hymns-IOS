@@ -32,28 +32,70 @@ class _HymnScreenState extends State<HymnScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
-        // Add the app bar and list of items as slivers in the next steps.
         slivers: [
-          // Add the app bar to the CustomScrollView.
           const SliverAppBar(
-            // Provide a standard title.
             title: Text("Hymn View"),
-            // Allows the user to reveal the app bar if they begin scrolling
-            // back up the list of items.
             floating: true,
-            // Display a placeholder widget to visualize the shrinking size.
-            flexibleSpace: Placeholder(),
-            // Make the initial height of the SliverAppBar larger than normal.
-            expandedHeight: 80,
+            expandedHeight: 60,
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView(
-              child: Html(
-                data: widget.isYoruba ? hymn.yoruba : hymn.english,
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        SizedBox(
+                          child: Text(
+                            "${hymn.id}. ${widget.isYoruba ? hymn.yorubaBibleText! : hymn.bibleText!}",
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                color: Colors.blueAccent,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22),
+                          ),
+                        ),
+
+                        const SizedBox(
+                          height: 10,
+                        ),
+
+                        // you can opt to remove the shrink
+                        SizedBox(
+                          child: Text(
+                              widget.isYoruba
+                                  ? hymn.yorubaBibleText!
+                                  : hymn.bibleText!,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  fontStyle: FontStyle.italic, fontSize: 16)),
+                        ),
+                        const SizedBox(
+                          height: 25,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
+              childCount: 1,
             ),
           ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => ListTile(
+                title: Html(
+                  data: widget.isYoruba ? hymn.yoruba : hymn.english,
+                ),
+              ),
+              childCount: 1,
+            ),
+          )
         ],
       ),
     );
