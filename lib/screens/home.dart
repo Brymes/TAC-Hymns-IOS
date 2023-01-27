@@ -1,92 +1,126 @@
-import 'package:flutter/material.dart';
-import 'package:tac_hymns_ios/screens/hymn_view.dart';
+import "package:flutter/material.dart";
+import "package:tac_hymns_ios/screens/hymn_view.dart";
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.hymnCount});
 
   final int hymnCount;
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  void switchLang(bool isYoruba) => yorubaState = isYoruba;
+
+  late bool yorubaState;
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        /*
+        TODO
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+                child: Text("Drawer Header"),
               ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Item 1'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Item 2'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
-      body: CustomScrollView(
-        // Add the app bar and list of items as slivers in the next steps.
-        slivers: [
-          // Add the app bar to the CustomScrollView.
-          const SliverAppBar(
-            // Provide a standard title.
-            title: Text("TAC Hymns IOS"),
-            // Allows the user to reveal the app bar if they begin scrolling
-            // back up the list of items.
-            floating: true,
-            // Display a placeholder widget to visualize the shrinking size.
-            flexibleSpace: Placeholder(),
-            // Make the initial height of the SliverAppBar larger than normal.
-            expandedHeight: 80,
-          ),
-          SliverList(
-            // Use a delegate to build items as they're scrolled on screen.
-            delegate: SliverChildBuilderDelegate(
-              // The builder function returns a ListTile with a title that
-              // displays the index of the current item.
-              (context, index) => ListTile(
-                title: Text('$index'),
+              ListTile(
+                title: const Text("Item 1"),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HymnScreen(hymnNo: index, isYoruba: false),
-                    ),
-                  );
+                  Navigator.pop(context);
                 },
               ),
-              // Builds 1000 ListTiles
-              childCount: hymnCount,
-            ),
-          )
-        ],
+              ListTile(
+                title: const Text("Item 2"),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        ),*/
+        body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            // These are the slivers that show up in the "outer" scroll view.
+            return <Widget>[
+              SliverOverlapAbsorber(
+                // This widget takes the overlapping behavior of the SliverAppBar,
+                // and redirects it to the SliverOverlapInjector below. If it is
+                // missing, then it is possible for the nested "inner" scroll view
+                // below to end up under the SliverAppBar even when the inner
+                // scroll view thinks it has not been scrolled.
+                // This is not necessary if the "headerSliverBuilder" only builds
+                // widgets that do not overlap the next sliver.
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: const SliverAppBar(
+                  title: Text("TAC Hymns IOS"),
+                  bottom: TabBar(
+                    labelPadding: EdgeInsets.all(15),
+                    tabs: [
+                      Text("ENGLISH VERSION"),
+                      Text("YORUBA VERSION"),
+                    ],
+                  ),
+                  floating: true,
+                  expandedHeight: 80,
+                ),
+              ),
+            ];
+          },
+          body: TabBarView(
+            children: [
+              HymnsList(hymnCount: widget.hymnCount, isYoruba: false),
+              HymnsList(hymnCount: widget.hymnCount, isYoruba: true),
+            ],
+          ),
+        ),
+        floatingActionButton: const FloatingActionButton(
+          onPressed: null,
+          tooltip: "Increment",
+          child: Icon(Icons.add),
+        ),
       ),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class HymnsList extends StatelessWidget {
+  const HymnsList({super.key, required this.hymnCount, required this.isYoruba});
+
+  final int hymnCount;
+  final bool isYoruba;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) => ListTile(
+              title: Text("${index + 1}"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        HymnScreen(hymnNo: index + 1, isYoruba: isYoruba),
+                  ),
+                );
+              },
+            ),
+            childCount: hymnCount,
+          ),
+        )
+      ],
     );
   }
 }

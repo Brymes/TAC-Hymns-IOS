@@ -21,11 +21,6 @@ class _HymnScreenState extends State<HymnScreen> {
     super.initState();
     Box<Hymn> box = Hive.box('hymnsBox');
     hymn = box.get(widget.hymnNo) ?? Hymn();
-    print("#" * 100);
-    print(widget.hymnNo);
-    print(box.length);
-    print(hymn.title);
-    print("#" * 100);
   }
 
   @override
