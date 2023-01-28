@@ -8,21 +8,20 @@ Future<void> main() async {
   Hive.initFlutter();
   Hive.registerAdapter(HymnAdapter());
 
-  Box<Hymn> hiveBox = await readHymns();
+  await readHymns();
 
-  runApp(MyApp(hymnCount: hiveBox.length));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.hymnCount});
-
-  final int hymnCount;
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TAC Hymns IOS',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -35,7 +34,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(hymnCount: hymnCount),
+      home: const HomeScreen(),
     );
   }
 }
