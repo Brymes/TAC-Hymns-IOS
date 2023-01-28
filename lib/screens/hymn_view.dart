@@ -3,25 +3,11 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:hive/hive.dart';
 import 'package:tac_hymns_ios/models/hymns_model.dart';
 
-class HymnScreen extends StatefulWidget {
-  const HymnScreen({super.key, required this.hymnNo, required this.isYoruba});
+class HymnScreen extends StatelessWidget {
+  const HymnScreen({super.key, required this.hymn, required this.isYoruba});
 
-  final int hymnNo;
+  final Hymn hymn;
   final bool isYoruba;
-
-  @override
-  State<HymnScreen> createState() => _HymnScreenState();
-}
-
-class _HymnScreenState extends State<HymnScreen> {
-  late Hymn hymn;
-
-  @override
-  void initState() {
-    super.initState();
-    Box<Hymn> box = Hive.box('hymnsBox');
-    hymn = box.get(widget.hymnNo) ?? Hymn();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +33,7 @@ class _HymnScreenState extends State<HymnScreen> {
                         ),
                         SizedBox(
                           child: Text(
-                            "${hymn.id}. ${widget.isYoruba ? hymn.yorubaBibleText! : hymn.bibleText!}",
+                            "${hymn.hymnNo}. ${isYoruba ? hymn.yorubaBibleText! : hymn.bibleText!}",
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                                 color: Colors.blueAccent,
@@ -63,7 +49,7 @@ class _HymnScreenState extends State<HymnScreen> {
                         // you can opt to remove the shrink
                         SizedBox(
                           child: Text(
-                              widget.isYoruba
+                              isYoruba
                                   ? hymn.yorubaBibleText!
                                   : hymn.bibleText!,
                               textAlign: TextAlign.center,
@@ -85,7 +71,7 @@ class _HymnScreenState extends State<HymnScreen> {
             delegate: SliverChildBuilderDelegate(
               (context, index) => ListTile(
                 title: Html(
-                  data: widget.isYoruba ? hymn.yoruba : hymn.english,
+                  data: isYoruba ? hymn.yoruba : hymn.english,
                 ),
               ),
               childCount: 1,

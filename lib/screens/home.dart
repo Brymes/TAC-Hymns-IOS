@@ -1,26 +1,39 @@
 import "package:flutter/material.dart";
+import 'package:hive/hive.dart';
 import "package:tac_hymns_ios/screens/hymn_view.dart";
+import 'package:tac_hymns_ios/screens/search.dart';
+
+import '../models/hymns_model.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.hymnCount});
-
-  final int hymnCount;
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  void switchLang(bool isYoruba) => yorubaState = isYoruba;
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  late bool isYoruba = false;
 
-  late bool yorubaState;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
+    _tabController.addListener(() {
+      setState(() {
+        isYoruba = _tabController.index == 0 ? false : true;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        /*
+    return Scaffold(
+      /*
         TODO
         drawer: Drawer(
           child: ListView(
@@ -47,57 +60,84 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),*/
-        body: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            // These are the slivers that show up in the "outer" scroll view.
-            return <Widget>[
-              SliverOverlapAbsorber(
-                // This widget takes the overlapping behavior of the SliverAppBar,
-                // and redirects it to the SliverOverlapInjector below. If it is
-                // missing, then it is possible for the nested "inner" scroll view
-                // below to end up under the SliverAppBar even when the inner
-                // scroll view thinks it has not been scrolled.
-                // This is not necessary if the "headerSliverBuilder" only builds
-                // widgets that do not overlap the next sliver.
-                handle:
-                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: const SliverAppBar(
-                  title: Text("TAC Hymns IOS"),
-                  bottom: TabBar(
-                    labelPadding: EdgeInsets.all(15),
-                    tabs: [
-                      Text("ENGLISH VERSION"),
-                      Text("YORUBA VERSION"),
-                    ],
+      body: NestedScrollView(
+        floatHeaderSlivers: true,
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          // These are the slivers that show up in the "outer" scroll view.
+          return <Widget>[
+            SliverOverlapAbsorber(
+              // This widget takes the overlapping behavior of the SliverAppBar,
+              // and redirects it to the SliverOverlapInjector below. If it is
+              // missing, then it is possible for the nested "inner" scroll view
+              // below to end up under the SliverAppBar even when the inner
+              // scroll view thinks it has not been scrolled.
+              // This is not necessary if the "headerSliverBuilder" only builds
+              // widgets that do not overlap the next sliver.
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverAppBar(
+                floating: true,
+                expandedHeight: 80,
+                title: const Text("TAC Hymns IOS"),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SearchPage(isYoruba: isYoruba),
+                        ),
+                      );
+                    },
                   ),
-                  floating: true,
-                  expandedHeight: 80,
+                ],
+                bottom: TabBar(
+                  controller: _tabController,
+                  labelPadding: const EdgeInsets.all(15),
+                  tabs: const [
+                    Text("ENGLISH VERSION"),
+                    Text("YORUBA VERSION"),
+                  ],
                 ),
               ),
-            ];
-          },
-          body: TabBarView(
-            children: [
-              HymnsList(hymnCount: widget.hymnCount, isYoruba: false),
-              HymnsList(hymnCount: widget.hymnCount, isYoruba: true),
-            ],
-          ),
+            ),
+          ];
+        },
+        body: TabBarView(
+          controller: _tabController,
+          children: const [
+            HymnsList(isYoruba: false),
+            HymnsList(isYoruba: true),
+          ],
         ),
-        floatingActionButton: const FloatingActionButton(
-          onPressed: null,
-          tooltip: "Increment",
-          child: Icon(Icons.add),
-        ),
+      ),
+      floatingActionButton: const FloatingActionButton(
+        onPressed: null,
+        tooltip: "Increment",
+        child: Icon(Icons.add),
       ),
     );
   }
 }
 
-class HymnsList extends StatelessWidget {
-  const HymnsList({super.key, required this.hymnCount, required this.isYoruba});
+class HymnsList extends StatefulWidget {
+  const HymnsList({Key? key, required this.isYoruba}) : super(key: key);
 
-  final int hymnCount;
   final bool isYoruba;
+
+  @override
+  State<HymnsList> createState() => _HymnsListState();
+}
+
+class _HymnsListState extends State<HymnsList> {
+  late Iterable<dynamic> hymns;
+
+  @override
+  void initState() {
+    super.initState();
+    Box<Hymn> box = Hive.box('hymnsBox');
+    hymns = box.values;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,19 +145,25 @@ class HymnsList extends StatelessWidget {
       slivers: [
         SliverList(
           delegate: SliverChildBuilderDelegate(
-            (context, index) => ListTile(
-              title: Text("${index + 1}"),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        HymnScreen(hymnNo: index + 1, isYoruba: isYoruba),
-                  ),
-                );
-              },
+            (context, index) => Container(
+              decoration: const BoxDecoration(
+                  border: Border(bottom: BorderSide(width: 0.5))),
+              child: ListTile(
+                contentPadding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
+                title: Text("${hymns.elementAt(index).hymnNo}"),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HymnScreen(
+                          hymn: hymns.elementAt(index),
+                          isYoruba: widget.isYoruba),
+                    ),
+                  );
+                },
+              ),
             ),
-            childCount: hymnCount,
+            childCount: hymns.length,
           ),
         )
       ],
