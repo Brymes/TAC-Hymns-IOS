@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
-import 'package:hive/hive.dart';
+import "package:hive/hive.dart";
 import "package:tac_hymns_ios/screens/hymn_view.dart";
-import 'package:tac_hymns_ios/screens/search.dart';
+import "package:tac_hymns_ios/screens/search.dart";
 
-import '../models/hymns_model.dart';
+import "../models/hymns_model.dart";
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -135,7 +135,7 @@ class _HymnsListState extends State<HymnsList> {
   @override
   void initState() {
     super.initState();
-    Box<Hymn> box = Hive.box('hymnsBox');
+    Box<Hymn> box = Hive.box("hymnsBox");
     hymns = box.values;
   }
 

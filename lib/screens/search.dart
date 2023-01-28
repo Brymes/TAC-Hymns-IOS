@@ -1,10 +1,10 @@
 // main.dart
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:hive/hive.dart";
 
-import '../models/hymns_model.dart';
-import 'hymn_view.dart';
+import "../models/hymns_model.dart";
+import "hymn_view.dart";
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key, required this.isYoruba});
@@ -21,7 +21,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void initState() {
-    Box<Hymn> box = Hive.box('hymnsBox');
+    Box<Hymn> box = Hive.box("hymnsBox");
     allHymns = box.values;
     hymns = allHymns;
     super.initState();
@@ -31,7 +31,7 @@ class _SearchPageState extends State<SearchPage> {
   void _runFilter(String enteredKeyword) {
     Iterable<dynamic> results = [];
     if (enteredKeyword.isEmpty) {
-      // if the search field is empty or only contains white-space, we'll display all users
+      // if the search field is empty or only contains white-space, we"ll display all users
       results = allHymns;
     } else {
       results = hymns
@@ -57,7 +57,7 @@ class _SearchPageState extends State<SearchPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // BackButton(
-                //   key: const ValueKey('ReplyExit'),
+                //   key: const ValueKey("ReplyExit"),
                 //   onPressed: () {
                 //     Provider.of<EmailStore>(
                 //       context,
@@ -68,7 +68,7 @@ class _SearchPageState extends State<SearchPage> {
                 Expanded(
                   child: TextField(
                     decoration: const InputDecoration.collapsed(
-                      hintText: 'Search hymn',
+                      hintText: "Search hymn",
                     ),
                     onChanged: (value) => _runFilter(value),
                   ),
@@ -103,7 +103,7 @@ class _SearchPageState extends State<SearchPage> {
               )
             : const Center(
                 child: Text(
-                  'No results found',
+                  "No results found",
                   style: TextStyle(fontSize: 24),
                 ),
               ));

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'hymns_model.dart';
+part of "hymns_model.dart";
 
 // **************************************************************************
 // TypeAdapterGenerator

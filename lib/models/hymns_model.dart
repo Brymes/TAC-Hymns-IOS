@@ -1,6 +1,6 @@
-import 'package:hive_flutter/hive_flutter.dart';
+import "package:hive_flutter/hive_flutter.dart";
 
-part 'hymns_model.g.dart';
+part "hymns_model.g.dart";
 
 @HiveType(typeId: 0)
 class Hymn {
@@ -51,16 +51,16 @@ class Hymn {
       this.stryctitle});
 
   Hymn.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
-    hymnNo = json['hymnNo'];
-    category = json['category'];
-    title = json['title'];
-    bibleText = json['bibleText'];
-    english = json['english'];
-    yorubaTitle = json['yorubaTitle'];
-    yorubaBibleText = json['yorubaBibleText'];
-    yoruba = json['yoruba'];
-    strectitle = json['strectitle'];
-    stryctitle = json['stryctitle'];
+    id = json["_id"];
+    hymnNo = json["hymnNo"];
+    category = json["category"];
+    title = json["title"];
+    bibleText = json["bibleText"];
+    english = json["english"];
+    yorubaTitle = json["yorubaTitle"];
+    yorubaBibleText = json["yorubaBibleText"];
+    yoruba = json["yoruba"];
+    strectitle = json["strectitle"];
+    stryctitle = json["stryctitle"];
   }
 }
