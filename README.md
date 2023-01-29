@@ -14,3 +14,21 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+
+## TODOS
+
+- Drawer for Tenets & Doctrine of TAC
+- Favorite Hymns
+- Update Hymns Online
+- Concurrency to Load JSON??
+- Categorise Hymns by
+  - Hymn No
+  - FirstLine
+  - Chorus
+  - Category
+- UX changes
+  - change language on Hymn View
+  - Jump to next hymn from Hymn View
+- Dark Mode
+- Loading Screen with Logo

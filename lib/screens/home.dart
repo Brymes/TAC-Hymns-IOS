@@ -19,7 +19,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
 
@@ -111,11 +110,11 @@ class _HomeScreenState extends State<HomeScreen>
           ],
         ),
       ),
-      floatingActionButton: const FloatingActionButton(
+      /*    floatingActionButton: const FloatingActionButton(
         onPressed: null,
         tooltip: "Increment",
         child: Icon(Icons.add),
-      ),
+      ),*/
     );
   }
 }

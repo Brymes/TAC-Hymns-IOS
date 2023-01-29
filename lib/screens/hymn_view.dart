@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flutter_html/flutter_html.dart";
-import "package:hive/hive.dart";
 import "package:tac_hymns_ios/models/hymns_model.dart";
 
 class HymnScreen extends StatelessWidget {
@@ -70,9 +69,14 @@ class HymnScreen extends StatelessWidget {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) => ListTile(
-                title: Html(
-                  data: isYoruba ? hymn.yoruba : hymn.english,
-                ),
+                title:
+                    Html(data: isYoruba ? hymn.yoruba : hymn.english, style: {
+                  //FIXME Messy and Jank Fix with the styling, Had to edit the JSON to have uniform rendering
+                  "html": Style(
+                    fontSize: FontSize.xLarge,
+                    fontFamily: "Bookman Old Style",
+                  ),
+                }),
               ),
               childCount: 1,
             ),
